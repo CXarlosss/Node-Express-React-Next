@@ -27,7 +27,7 @@ app.get('/', (req, res) => {
   res.send('¡Bienvenido a la API de DEVTREE!');
 });
 app.get('/health', (req, res) => {
-  res.status(200).json({ message: 'API is running smoothly!' });
+  res.status(200).json({ message: ' HEALTH API is running smoothly!' });
 })// Start
 app.listen(PORT, () => {
   console.log(colors.cyan.bold(`Servidor backend escuchando en el puerto ${PORT}`));
