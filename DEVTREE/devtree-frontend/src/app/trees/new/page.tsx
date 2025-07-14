@@ -4,10 +4,9 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import axios from 'axios'
 import { useRouter } from 'next/navigation'
-import { useAuthStore } from '@/store/auth'
 import { useState } from 'react'
+import { api } from '@/lib/api'
 
 const schema = z.object({
   title: z.string().min(2, 'El título es obligatorio'),
@@ -18,7 +17,6 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>
 
 export default function NewTreePage() {
-  const { token } = useAuthStore()
   const router = useRouter()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -35,13 +33,7 @@ export default function NewTreePage() {
     setLoading(true)
     setError('')
     try {
-      await axios.post(
-        'http://localhost:4000/api/trees',
-        data,
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      )
+      await api.post('/trees', data)
       router.push('/dashboard')
     } catch (err) {
       setError('No se pudo crear el árbol. Intenta de nuevo.')
