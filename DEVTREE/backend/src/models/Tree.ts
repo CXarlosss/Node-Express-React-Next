@@ -1,25 +1,19 @@
-import { Schema, model, Document, Types } from 'mongoose';
+import { Schema, model, Document, Types } from 'mongoose'
 
 export interface ITree extends Document {
-  _id: Types.ObjectId;
-  name: string;
-  description?: string;
-  owner: Types.ObjectId;
-  nodes: Types.ObjectId[];
-  isPublic: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  name: string
+  description?: string
+  isPublic: boolean
+  nodes: Types.ObjectId[]
+  owner: Types.ObjectId
 }
 
-const treeSchema = new Schema<ITree>(
-  {
-    name: { type: String, required: true },
-    description: { type: String },
-    owner: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    nodes: [{ type: Schema.Types.ObjectId, ref: 'Node' }],
-    isPublic: { type: Boolean, default: false },
-  },
-  { timestamps: true }
-);
+const treeSchema = new Schema<ITree>({
+  name: { type: String, required: true },
+  description: { type: String },
+  isPublic: { type: Boolean, default: false },
+  nodes: [{ type: Schema.Types.ObjectId, ref: 'Node' }], // 🔥 ESTA LÍNEA ES CLAVE
+  owner: { type: Schema.Types.ObjectId, ref: 'User', required: true }
+})
 
-export default model<ITree>('Tree', treeSchema);
+export default model<ITree>('Tree', treeSchema)

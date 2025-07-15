@@ -52,9 +52,10 @@ router.put('/:id', protect, async (req: AuthRequest, res: Response) => {
   }
 })
 // Obtener árbol privado solo si es dueño (para editar)
+// Obtener árbol privado solo si es dueño (para editar o gestionar nodos)
 router.get('/:id/private', protect, async (req: AuthRequest, res: Response) => {
   try {
-    const tree = await Tree.findById(req.params.id);
+    const tree = await Tree.findById(req.params.id).populate('nodes');
     if (!tree) return res.status(404).json({ message: 'Árbol no encontrado' });
 
     if (tree.owner.toString() !== req.user._id.toString()) {
