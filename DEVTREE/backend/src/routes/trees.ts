@@ -31,6 +31,41 @@ router.get('/mine', protect, async (req: AuthRequest, res: Response) => {
     res.status(500).json({ message: 'Error al obtener árboles', error: err });
   }
 });
+// Actualizar árbol (solo dueño)
+router.put('/:id', protect, async (req: AuthRequest, res: Response) => {
+  try {
+    const tree = await Tree.findById(req.params.id)
+    if (!tree) return res.status(404).json({ message: 'Árbol no encontrado' })
+
+    if (tree.owner.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'No autorizado' })
+    }
+
+    tree.name = req.body.name
+    tree.description = req.body.description
+    tree.isPublic = req.body.isPublic
+    await tree.save()
+
+    res.json(tree)
+  } catch (err) {
+    res.status(500).json({ message: 'Error al actualizar árbol', error: err })
+  }
+})
+// Obtener árbol privado solo si es dueño (para editar)
+router.get('/:id/private', protect, async (req: AuthRequest, res: Response) => {
+  try {
+    const tree = await Tree.findById(req.params.id);
+    if (!tree) return res.status(404).json({ message: 'Árbol no encontrado' });
+
+    if (tree.owner.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'No tienes permiso para ver este árbol' });
+    }
+
+    res.json(tree);
+  } catch (err) {
+    res.status(500).json({ message: 'Error al obtener el árbol', error: err });
+  }
+});
 
 // Obtener árbol público por ID
 router.get('/:id', async (req, res: Response) => {

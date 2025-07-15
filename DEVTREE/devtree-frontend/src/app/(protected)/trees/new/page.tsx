@@ -1,4 +1,3 @@
-// app/trees/new/page.tsx
 'use client'
 
 import { useForm } from 'react-hook-form'
@@ -9,7 +8,7 @@ import { useState } from 'react'
 import { api } from '@/lib/api'
 
 const schema = z.object({
-  title: z.string().min(2, 'El título es obligatorio'),
+  name: z.string().min(2, 'El nombre es obligatorio'),
   description: z.string().min(5, 'Añade una descripción más detallada'),
   isPublic: z.boolean().optional()
 })
@@ -30,6 +29,8 @@ export default function NewTreePage() {
   })
 
   const onSubmit = async (data: FormData) => {
+      console.log('📦 Payload que se envía:', data) // <--- Añade esto
+
     setLoading(true)
     setError('')
     try {
@@ -55,10 +56,10 @@ export default function NewTreePage() {
           <label className="block mb-1 text-sm">Título</label>
           <input
             type="text"
-            {...register('title')}
+            {...register('name')}
             className="w-full px-4 py-2 rounded-xl border outline-none text-black"
           />
-          {errors.title && <p className="text-red-400 text-sm mt-1">{errors.title.message}</p>}
+          {errors.name && <p className="text-red-400 text-sm mt-1">{errors.name.message}</p>}
         </div>
 
         <div>

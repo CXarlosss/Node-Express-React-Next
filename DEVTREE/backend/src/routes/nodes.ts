@@ -59,5 +59,17 @@ router.delete('/:id', protect, async (req: AuthRequest, res: Response) => {
     res.status(500).json({ message: 'Error al eliminar nodo', error: err });
   }
 });
+// Obtener todos los nodos de un árbol específico (protegido)
+router.get('/tree/:treeId', protect, async (req: AuthRequest, res: Response) => {
+  try {
+    const nodes = await Node.find({
+      tree: req.params.treeId,
+      createdBy: req.user._id,
+    }).sort({ createdAt: 1 }) // o por parent si usas jerarquía
+    res.json(nodes)
+  } catch (err) {
+    res.status(500).json({ message: 'Error al obtener nodos del árbol', error: err })
+  }
+})
 
 export default router;
