@@ -1,11 +1,13 @@
-// src/app/(public)/explore/Categorias/page.tsx
 'use client';
 
 import React, { useCallback } from 'react';
-import { Tags } from 'lucide-react'; // Importar el icono de Tags
+import { Tags } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
 
-export default function CategoriasPage() { // <-- CAMBIO CLAVE: export default function
-  // Mock de categorías para la sección "Explorar por Categorías"
+export default function CategoriasPage() {
+  const router = useRouter();
+
   const categories = [
     { name: 'Desarrollo Web', icon: '💻' },
     { name: 'Diseño UX/UI', icon: '🎨' },
@@ -19,13 +21,9 @@ export default function CategoriasPage() { // <-- CAMBIO CLAVE: export default f
     { name: 'Cocina y Recetas', icon: '🍳' },
   ];
 
-  // Lógica de selección de categoría
   const handleSelectCategory = useCallback((categoryName: string) => {
-    console.log('Filtrando por categoría:', categoryName);
-    // Aquí iría la lógica real para filtrar árboles/nodos por categoría
-    // o para redirigir a una página de resultados de categoría.
-    // Ejemplo: router.push(`/explore/resultados?category=${categoryName}`);
-  }, []);
+    router.push(`/explore/resultados?category=${encodeURIComponent(categoryName)}`);
+  }, [router]);
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-primary-green-light to-primary-green-lighter text-custom-gray-dark px-4 py-16 sm:px-6 md:px-10">
@@ -42,16 +40,19 @@ export default function CategoriasPage() { // <-- CAMBIO CLAVE: export default f
           <h2 className="text-3xl font-bold text-primary-green-darker mb-6 flex items-center gap-3">
             <Tags className="w-8 h-8 text-primary-green" /> Elige un tema
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6"> {/* Aumentado el gap */}
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
             {categories.map(category => (
-              <button
+              <motion.button
                 key={category.name}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.97 }}
                 onClick={() => handleSelectCategory(category.name)}
-                className="flex flex-col items-center justify-center p-5 bg-primary-green-light text-primary-green-darker rounded-xl border border-primary-green hover:bg-primary-green hover:text-white transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg font-medium text-center"
+                className="flex flex-col items-center justify-center p-5 bg-primary-green-light text-primary-green-darker rounded-xl border border-primary-green hover:bg-primary-green hover:text-white transition-all duration-200 shadow-md font-medium text-center"
               >
-                <span className="text-4xl mb-3">{category.icon}</span> {/* Icono más grande */}
-                <span className="text-lg font-semibold">{category.name}</span> {/* Texto más grande y negrita */}
-              </button>
+                <span className="text-4xl mb-3">{category.icon}</span>
+                <span className="text-lg font-semibold">{category.name}</span>
+              </motion.button>
             ))}
           </div>
         </section>
