@@ -1,61 +1,52 @@
 'use client';
 
-import React, { useCallback } from 'react';
-import { Tags } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import Link from 'next/link';
 
 export default function CategoriasPage() {
-  const router = useRouter();
+  const [tags, setTags] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  const categories = [
-    { name: 'Desarrollo Web', icon: '💻' },
-    { name: 'Diseño UX/UI', icon: '🎨' },
-    { name: 'Marketing Digital', icon: '📈' },
-    { name: 'Ciencia de Datos', icon: '📊' },
-    { name: 'Inteligencia Artificial', icon: '🤖' },
-    { name: 'Productividad', icon: '⏱️' },
-    { name: 'Finanzas Personales', icon: '💰' },
-    { name: 'Idiomas', icon: '🗣️' },
-    { name: 'Salud y Bienestar', icon: '🧘‍♀️' },
-    { name: 'Cocina y Recetas', icon: '🍳' },
-  ];
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const res = await axios.get('http://localhost:4000/api/trees/tags/all');
+        setTags(res.data);
+      } catch (err) {
+        console.error('Error al cargar tags:', err);
+        setError('No se pudieron cargar las categorías.');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const handleSelectCategory = useCallback((categoryName: string) => {
-    router.push(`/explore/resultados?category=${encodeURIComponent(categoryName)}`);
-  }, [router]);
+    fetchTags();
+  }, []);
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-primary-green-light to-primary-green-lighter text-custom-gray-dark px-4 py-16 sm:px-6 md:px-10">
-      <div className="max-w-6xl mx-auto space-y-12">
-        <h1 className="text-5xl font-extrabold text-primary-green-darker text-center mb-10">
-          Explorar por Categorías 🏷️
-        </h1>
-
-        <p className="text-xl text-custom-gray-medium text-center max-w-2xl mx-auto mb-12">
-          Navega por el conocimiento organizado en diversas categorías temáticas.
+    <main className="min-h-screen px-6 py-12 bg-gradient-to-br from-primary-green-light to-primary-green-lighter text-custom-gray-dark">
+      <div className="max-w-4xl mx-auto text-center">
+        <h1 className="text-4xl font-extrabold text-primary-green-darker mb-6">Categorías disponibles</h1>
+        <p className="text-lg text-custom-gray-medium mb-12">
+          Elige una categoría para explorar árboles y nodos relacionados.
         </p>
 
-        <section className="bg-white p-8 rounded-2xl shadow-xl border border-primary-green-light">
-          <h2 className="text-3xl font-bold text-primary-green-darker mb-6 flex items-center gap-3">
-            <Tags className="w-8 h-8 text-primary-green" /> Elige un tema
-          </h2>
+        {loading && <p className="text-center">Cargando categorías...</p>}
+        {error && <p className="text-red-600">{error}</p>}
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-            {categories.map(category => (
-              <motion.button
-                key={category.name}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.97 }}
-                onClick={() => handleSelectCategory(category.name)}
-                className="flex flex-col items-center justify-center p-5 bg-primary-green-light text-primary-green-darker rounded-xl border border-primary-green hover:bg-primary-green hover:text-white transition-all duration-200 shadow-md font-medium text-center"
-              >
-                <span className="text-4xl mb-3">{category.icon}</span>
-                <span className="text-lg font-semibold">{category.name}</span>
-              </motion.button>
-            ))}
-          </div>
-        </section>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 justify-center">
+          {tags.map(tag => (
+            <Link
+              key={tag}
+              href={`/explore/resultados?category=${encodeURIComponent(tag)}`}
+              className="px-4 py-3 bg-white rounded-lg shadow hover:bg-primary-green-light hover:text-white font-semibold text-sm border text-primary-green-dark transition"
+            >
+              {tag}
+            </Link>
+          ))}
+        </div>
       </div>
     </main>
   );

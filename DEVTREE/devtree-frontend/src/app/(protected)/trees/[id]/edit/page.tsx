@@ -1,3 +1,4 @@
+// src/app/(private)/dashboard/trees/edit/[id]/page.tsx
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -6,29 +7,42 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useParams, useRouter } from 'next/navigation'
 import { api } from '@/lib/api'
-import { useAuthStore } from "@/store/auth"; // Asegúrate de que la ruta sea correcta
+import { useAuthStore } from "@/store/auth";
+import axios from 'axios'
 
-import axios from 'axios' // Importa axios para el manejo de errores
-
+// 1. ✅ ACTUALIZAR ESQUEMA ZOD para incluir 'tags' como string de entrada
 const schema = z.object({
   name: z.string().min(2, 'El nombre es obligatorio'),
   description: z.string().min(5, 'La descripción debe ser más larga'),
-  isPublic: z.boolean().optional()
+  isPublic: z.boolean().optional(),
+  // Campo 'tags' como string para la entrada del formulario
+  tags: z.string().optional()
 })
 
-type FormData = z.infer<typeof schema>
+// Tipo para los datos de ENTRADA del formulario (antes de la transformación)
+type FormInput = z.infer<typeof schema>;
+
+// Tipo para los datos de SALIDA (el payload enviado a la API)
+type FormOutput = {
+  name: string;
+  description: string;
+  isPublic?: boolean;
+  tags: string[]; // 'tags' será un array de strings en el payload final
+}
 
 export default function EditTreePage() {
-  const { id } = useParams()
+  const { id } = useParams<{ id: string }>() // Asegurar que 'id' es string
   const router = useRouter()
   const token = useAuthStore(state => state.token)
-  // Añadir la protección de ruta aquí también
   const hasHydrated = useAuthStore((state) => state.hasHydrated);
 
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormData>({
-    resolver: zodResolver(schema)
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormInput>({ // Usamos FormInput aquí
+    resolver: zodResolver(schema),
+    defaultValues: { // Inicializa tags para evitar undefined en el input
+      tags: ''
+    }
   })
 
   useEffect(() => {
@@ -40,7 +54,6 @@ export default function EditTreePage() {
     // Si no ha hidratado o no hay token, esperar
     if (!hasHydrated || !token) return;
 
-
     const fetchTree = async () => {
       try {
         const res = await api.get(`/trees/${id}/private`, {
@@ -50,12 +63,20 @@ export default function EditTreePage() {
         setValue('name', tree.name)
         setValue('description', tree.description)
         setValue('isPublic', tree.isPublic)
-      } catch (err: unknown) { // Añadir 'unknown' al tipo de error
+        // 2. ✅ Cargar los tags existentes y convertirlos a una cadena separada por comas
+        setValue('tags', tree.tags ? tree.tags.join(', ') : '') // Convierte el array a string
+      } catch (err: unknown) {
         console.error("Error al cargar el árbol:", err)
-        // Manejo de errores de Axios para redirección en 401
         if (axios.isAxiosError(err) && err.response && err.response.status === 401) {
           router.push('/login');
-        } else {
+        } else if (axios.isAxiosError(err) && err.response && err.response.status === 403) {
+          setError('No tienes permiso para editar este árbol.');
+          router.push('/dashboard'); // O a una página de error de permisos
+        } else if (axios.isAxiosError(err) && err.response && err.response.status === 404) {
+          setError('Árbol no encontrado.');
+          router.push('/dashboard');
+        }
+         else {
           setError('Error al cargar el árbol. Asegúrate de tener permisos.');
         }
       } finally {
@@ -64,16 +85,29 @@ export default function EditTreePage() {
     }
 
     fetchTree()
-  }, [id, token, setValue, hasHydrated, router]) // Asegúrate de incluir todas las dependencias
+  }, [id, token, setValue, hasHydrated, router])
 
-  const onSubmit = async (data: FormData) => {
-    setError(''); // Limpiar errores previos
+  const onSubmit = async (inputData: FormInput) => { // Recibe FormInput
+    setError('');
+
+    // 3. ✅ Realizar la transformación de tags antes de enviar el payload
+    const transformedTags = inputData.tags
+      ? inputData.tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0)
+      : [];
+
+    const payload: FormOutput = { // Construye el payload como FormOutput
+      name: inputData.name,
+      description: inputData.description,
+      isPublic: inputData.isPublic,
+      tags: transformedTags // Envía el array de tags
+    };
+
     try {
-      await api.put(`/trees/${id}`, data, {
+      await api.put(`/trees/${id}`, payload, { // Envía el payload transformado
         headers: { Authorization: `Bearer ${token}` }
       })
       router.push('/dashboard')
-    } catch (err: unknown) { // Añadir 'unknown' al tipo de error
+    } catch (err: unknown) {
       console.error("Error al guardar cambios:", err)
       if (axios.isAxiosError(err) && err.response && err.response.status === 401) {
         router.push('/login');
@@ -92,7 +126,7 @@ export default function EditTreePage() {
         headers: { Authorization: `Bearer ${token}` }
       })
       router.push('/dashboard')
-    } catch (err: unknown) { // Añadir 'unknown' al tipo de error
+    } catch (err: unknown) {
       console.error("Error al eliminar el árbol:", err)
       if (axios.isAxiosError(err) && err.response && err.response.status === 401) {
         router.push('/login');
@@ -102,7 +136,6 @@ export default function EditTreePage() {
     }
   }
 
-  // Protección de ruta inicial
   if (!hasHydrated || (!token && !loading)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-green-light to-primary-green-lighter text-custom-gray-dark">
@@ -118,7 +151,6 @@ export default function EditTreePage() {
       </div>
     );
   }
-
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-green-light to-primary-green-lighter text-custom-gray-dark px-4 py-16">
@@ -147,11 +179,26 @@ export default function EditTreePage() {
           <textarea
             id="description"
             {...register('description')}
-            rows={4} // Aumentado a 4 filas para más espacio
+            rows={4}
             className="w-full px-4 py-2.5 rounded-lg border border-custom-gray-light focus:ring-2 focus:ring-primary-green focus:border-transparent outline-none text-custom-gray-dark bg-custom-gray-lighter resize-none transition duration-200"
             placeholder="Ej: Un espacio para organizar mis estrategias de SEO y redes sociales."
           />
           {errors.description && <p className="text-red-600 text-sm mt-1">{errors.description.message}</p>}
+        </div>
+
+        {/* 4. ✅ NUEVO CAMPO: Tags para edición */}
+        <div>
+          <label htmlFor="tags" className="block mb-2 text-custom-gray-dark text-base font-medium">
+            Etiquetas (separadas por comas)
+          </label>
+          <input
+            id="tags"
+            type="text"
+            {...register('tags')}
+            className="w-full px-4 py-2.5 rounded-lg border border-custom-gray-light focus:ring-2 focus:ring-primary-green focus:border-transparent outline-none text-custom-gray-dark bg-custom-gray-lighter transition duration-200"
+            placeholder="Ej: Programación, Frontend, JavaScript"
+          />
+          {errors.tags && <p className="text-red-600 text-sm mt-1">{errors.tags.message}</p>}
         </div>
 
         <div className="flex items-center gap-3 mt-4">

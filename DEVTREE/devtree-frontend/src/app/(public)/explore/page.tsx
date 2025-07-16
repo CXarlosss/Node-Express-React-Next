@@ -25,7 +25,7 @@ export default function ExplorePage() {
     {
       name: 'Explorar por Categorías',
       description: 'Navega por el conocimiento organizado en diversas categorías temáticas.',
-      path: '/explore/Categorias',
+      path: '/explore/categorias',
       icon: <Tags className="w-10 h-10 text-primary-green" />,
     },
     {

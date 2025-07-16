@@ -27,55 +27,28 @@ export default function BusquedaPage() { // <-- CAMBIO CLAVE: export default fun
   const [error, setError] = useState('');
 
   const handleSearch = async () => {
-    setError('');
-    setLoading(true);
+  setError('');
+  setLoading(true);
 
-    // Opcional: Protección de ruta si la API de búsqueda requiere autenticación
-    if (!hasHydrated) {
-        // Esperar hidratación o mostrar un mensaje de carga de autenticación
-        setLoading(false);
-        return;
+  if (!hasHydrated) {
+    setLoading(false);
+    return;
+  }
+
+  try {
+    const res = await axios.get(`http://localhost:4000/api/search?q=${encodeURIComponent(searchTerm)}`);
+    setSearchResults(res.data);
+  } catch (err: unknown) {
+    console.error("Error al buscar:", err);
+    if (axios.isAxiosError(err)) {
+      setError(err.response?.data?.message || 'Error al realizar la búsqueda. Inténtalo de nuevo.');
+    } else {
+      setError('Ha ocurrido un error inesperado durante la búsqueda.');
     }
-    if (!token) {
-        // Redirigir si no hay token y la búsqueda lo requiere
-        // router.push('/login');
-        // setError('Necesitas iniciar sesión para realizar búsquedas.'); // O un mensaje más específico
-        // setLoading(false);
-        // return;
-    }
-
-    try {
-      // Aquí iría tu lógica de llamada a la API de búsqueda
-      // Ejemplo: const res = await api.get(`/search?q=${searchTerm}`, { headers: { Authorization: `Bearer ${token}` } });
-      // setSearchResults(res.data);
-
-      // Simulación de una llamada a la API con un pequeño retardo
-      await new Promise(resolve => setTimeout(resolve, 800)); // Simula retardo de red
-
-      if (searchTerm.toLowerCase().includes('react')) {
-        setSearchResults([
-          { _id: 'mock1', title: 'Árbol de React Hooks', description: 'Ejemplos y explicaciones de los hooks más comunes en React.' },
-          { _id: 'mock2', title: 'Guía Avanzada de React Performance', description: 'Consejos y trucos para optimizar el rendimiento de tus aplicaciones React.' },
-        ]);
-      } else if (searchTerm.toLowerCase().includes('diseño')) {
-        setSearchResults([
-          { _id: 'mock3', title: 'Principios de Diseño UX/UI', description: 'Un compendio de las mejores prácticas en diseño de experiencia de usuario.' },
-        ]);
-      } else {
-        setSearchResults([]);
-      }
-
-    } catch (err: unknown) {
-      console.error("Error al buscar:", err);
-      if (axios.isAxiosError(err)) {
-        setError(err.response?.data?.message || 'Error al realizar la búsqueda. Inténtalo de nuevo.');
-      } else {
-        setError('Ha ocurrido un error inesperado durante la búsqueda.');
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-primary-green-light to-primary-green-lighter text-custom-gray-dark px-4 py-16 sm:px-6 md:px-10">

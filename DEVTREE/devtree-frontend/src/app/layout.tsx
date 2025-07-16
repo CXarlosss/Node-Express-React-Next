@@ -1,11 +1,29 @@
+// src/app/layout.tsx
+import { Header } from "@/components/layout/Header"; // Importa tu componente Header
 import "../styles/tailwind.css"; // Asegúrate de que esta ruta sea correcta
+import type { Metadata } from 'next';
+
+// Opcional: Define los metadatos de tu aplicación aquí
+export const metadata: Metadata = {
+  title: 'DevTree',
+  description: 'Tu plataforma para crear y explorar árboles de conocimiento.',
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
-      {/* Aplicamos las clases base definidas en tailwind.config.ts y globals.css */}
       <body className="bg-primary-green-light text-custom-gray-dark font-sans antialiased">
-        {children}
+        {/* Tu Header se renderizará aquí, por encima de todo el contenido de la página */}
+        <Header />
+        
+        {/* El 'children' representa el contenido de cada página.
+          Añadimos un padding-top (pt-20) al contenedor de children para
+          compensar la altura del header fijo y evitar que el contenido se solape.
+          La clase 'min-h-screen' asegura que el contenido ocupe al menos la altura de la ventana.
+        */}
+        <div className="pt-20 min-h-screen"> {/* ⭐ IMPORTANTE: Añade pt-20 aquí ⭐ */}
+          {children}
+        </div>
       </body>
     </html>
   );

@@ -27,6 +27,7 @@ export default function DestacadosPage() {
 
   useEffect(() => {
     // Optional: Route protection if the featured trees API requires authentication
+    // This part remains as is, checking for hydration and token if needed.
     if (!hasHydrated) {
         setLoading(true); // Keep loading state while hydrating
         return;
@@ -39,27 +40,15 @@ export default function DestacadosPage() {
 
     const fetchPublicTrees = async () => {
       try {
-        // Here would go your actual API call for featured public trees
-        // Example: const res = await api.get('/trees/public/featured', { headers: { Authorization: `Bearer ${token}` } });
-        // setPublicTrees(res.data);
+        // --- CAMBIO CLAVE AQUÍ: Llama a tu API real ---
+        const res = await axios.get('http://localhost:4000/api/trees/public');
+        setPublicTrees(res.data);
+        // --- FIN DEL CAMBIO CLAVE ---
 
-        // Simulation of an API call with a small delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-        // Example data for demonstration
-        setPublicTrees([
-          { _id: '1', name: 'Guía Completa de React', description: 'Un árbol detallado sobre el ecosistema de React, desde lo básico hasta hooks avanzados.', isPublic: true },
-          { _id: '2', name: 'Fundamentos de Diseño UI', description: 'Principios clave y herramientas para crear interfaces de usuario intuitivas y atractivas.', isPublic: true },
-          { _id: '3', name: 'SEO para Principiantes', description: 'Todo lo que necesitas saber para optimizar tu sitio web para motores de búsqueda.', isPublic: true },
-          { _id: '4', name: 'Introducción a Machine Learning', description: 'Conceptos básicos y algoritmos populares en el aprendizaje automático.', isPublic: true },
-          { _id: '5', name: 'Gestión de Proyectos Ágiles', description: 'Metodologías y herramientas para la gestión eficiente de proyectos de software.', isPublic: true },
-          { _id: '6', name: 'Dominando TypeScript', description: 'Aprende a usar TypeScript para construir aplicaciones robustas y escalables.', isPublic: true },
-          { _id: '7', name: 'Principios SOLID en Desarrollo', description: 'Entiende los principios SOLID para escribir código más limpio y mantenible.', isPublic: true },
-        ]);
       } catch (err: unknown) {
         console.error("Error al cargar árboles públicos destacados:", err);
         if (axios.isAxiosError(err) && err.response && err.response.status === 401) {
-          // router.push('/login'); // Uncomment if the public trees API requires authentication
+          // router.push('/login'); // Descomenta si la API de árboles públicos requiere autenticación
           setError('Necesitas iniciar sesión para ver los árboles destacados.');
         } else {
           setError('Error al cargar los árboles destacados. Por favor, inténtalo de nuevo más tarde.');

@@ -15,18 +15,22 @@ router.get('/', async (req: Request, res: Response) => {
 
     const regex = new RegExp(query, 'i'); // búsqueda insensible a mayúsculas
 
-    // Buscar árboles públicos por nombre o descripción
     const trees = await Tree.find({
       isPublic: true,
-      $or: [{ name: regex }, { description: regex }],
-    }).select('_id name description'); // opcional: selecciona solo los campos necesarios
+      $or: [
+        { name: regex },
+        { description: regex },
+        { tags: { $in: [regex] } }, // ✅ BÚSQUEDA POR TAGS
+      ],
+    }).select('_id name description');
 
-    // Buscar nodos por título o descripción
     const nodes = await Node.find({
-      $or: [{ title: regex }, { description: regex }],
+      $or: [
+        { title: regex },
+        { description: regex },
+      ],
     }).select('_id title description');
 
-    // Normaliza los resultados (puedes incluir el tipo si quieres mostrarlo en frontend)
     const results = [
       ...trees.map(t => ({
         _id: t._id,
@@ -48,7 +52,8 @@ router.get('/', async (req: Request, res: Response) => {
     res.status(500).json({ message: 'Error en la búsqueda', error: err });
   }
 });
-// ⚠️ Solo para pruebas, luego elimínalo
+
+/* // ⚠️ Solo para pruebas, luego elimínalo
 router.post('/mock-data', async (_req, res) => {
   try {
     const ownerId = '6875251dc2121e43306cc73f'; // reemplaza por tu ID real
@@ -82,6 +87,6 @@ router.post('/mock-data', async (_req, res) => {
   } catch (err) {
     res.status(500).json({ message: 'Error al insertar datos', error: err });
   }
-});
+}); */
 
 export default router;
