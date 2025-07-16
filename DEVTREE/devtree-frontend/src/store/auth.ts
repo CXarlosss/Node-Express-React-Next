@@ -4,7 +4,8 @@ import { persist } from 'zustand/middleware'
 type AuthState = {
   token: string | null
   hasHydrated: boolean
-  setToken: (token: string) => void
+setToken: (token: string | null) => void
+
   logout: () => void
 }
 

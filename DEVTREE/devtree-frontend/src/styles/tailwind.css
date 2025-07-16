@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Variables CSS para nuestra paleta de verdes y blancos */
+:root {
+  --color-primary-green: #22c55e; /* green-500 */
+  --color-primary-green-dark: #16a34a; /* green-600 */
+  --color-primary-green-darker: #15803d; /* green-700 */
+  --color-accent-green-light: #dcfce7; /* green-50 */
+  --color-accent-green-lighter: #f0fdf4; /* green-10 */
+
+  --color-text-dark: #1f2937; /* gray-800 */
+  --color-text-medium: #4b5563; /* gray-600 */
+  --color-text-light: #6b7280; /* gray-500 */
+  --color-background-light: #ffffff; /* white */
+  --color-border-light: #e5e7eb; /* gray-200 */
+}
 
 @keyframes fade-in {
   from {
@@ -18,4 +32,8 @@
   animation: fade-in 0.5s ease-out forwards;
 }
 
-
+/* Estilos base para el cuerpo de la página */
+body {
+  font-family: 'Inter', sans-serif; /* Puedes cambiar la fuente si lo deseas */
+  @apply text-gray-800 bg-green-50; /* Aplicamos el fondo y color de texto por defecto */
+}

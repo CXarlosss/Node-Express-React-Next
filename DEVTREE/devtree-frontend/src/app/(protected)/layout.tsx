@@ -10,13 +10,27 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
   const router = useRouter()
 
   useEffect(() => {
+    // If the store has hydrated and there's no token, redirect to login
     if (hasHydrated && !token) {
       router.push('/login')
     }
-  }, [hasHydrated, token, router])
+  }, [hasHydrated, token, router]) // Dependencies array ensures effect runs when these values change
 
-  if (!hasHydrated) return <p className="text-white text-center mt-10">Cargando...</p>
-  if (!token) return null
+  // Show a full-screen loading indicator while authentication state is being determined
+  if (!hasHydrated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-green-light to-primary-green-lighter text-custom-gray-dark">
+        <p className="text-lg text-custom-gray-medium animate-pulse">Cargando...</p>
+      </div>
+    );
+  }
 
-  return <>{children}</>
+  // If hydrated but no token, this means the user is not authenticated and has been redirected
+  // We return null here to prevent rendering the children while the redirect is happening.
+  if (!token) {
+    return null;
+  }
+
+  // If authenticated, render the children
+  return <>{children}</>;
 }

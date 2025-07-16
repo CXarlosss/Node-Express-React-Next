@@ -7,7 +7,7 @@ import { z } from 'zod'
 import { useState } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
-import { useAuthStore } from '@/store/auth'
+import { useAuthStore } from "@/store/auth"; // Asegúrate de que la ruta sea correcta
 import { Loader2 } from 'lucide-react'
 
 const schema = z.object({
