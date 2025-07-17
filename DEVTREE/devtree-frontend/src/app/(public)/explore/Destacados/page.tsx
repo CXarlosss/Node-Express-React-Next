@@ -99,7 +99,7 @@ export default function DestacadosPage() {
               {publicTrees.map(tree => (
                 <Link
                   key={tree._id}
-                  href={`/trees/${tree._id}/view`} // Assuming a route to view public trees
+                  href={`/explore/Destacados/${tree._id}/destacados_view`} // <-- RUTA CORREGIDA AQUÍ
                   className="block bg-custom-gray-lighter p-6 rounded-2xl border-2 border-primary-green hover:border-primary-green-dark transition-all duration-300 transform hover:scale-[1.03] shadow-lg hover:shadow-xl flex flex-col justify-between" // Estilo más destacado
                 >
                   <div>

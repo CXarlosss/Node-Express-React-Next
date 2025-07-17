@@ -1,10 +1,10 @@
 // src/app/(public)/explore/Tendencias/page.tsx
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
-import axios from 'axios';
-import { Loader2, TrendingUp, Sparkles } from 'lucide-react'; // Added Sparkles for a touch of "new/hot"
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import axios from "axios";
+import { Loader2, TrendingUp, Sparkles } from "lucide-react"; // Added Sparkles for a touch of "new/hot"
 
 interface TrendingTreeType {
   _id: string;
@@ -20,25 +20,28 @@ interface TrendingTreeType {
 export default function TendenciasPage() {
   const [trendingTrees, setTrendingTrees] = useState<TrendingTreeType[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    document.title = 'Tendencias Recientes | DevTree';
+    document.title = "Tendencias Recientes | DevTree";
 
     const fetchTrendingTrees = async () => {
       setLoading(true);
-      setError('');
+      setError("");
       try {
         // Replace with your actual backend endpoint for trending trees
         // Example: GET http://localhost:4000/api/trees/trending
-        const res = await axios.get('http://localhost:4000/api/trees/trending');
+        const res = await axios.get("http://localhost:4000/api/trees/trending");
         setTrendingTrees(res.data);
       } catch (err: unknown) {
-        console.error('Error al obtener árboles en tendencia:', err);
+        console.error("Error al obtener árboles en tendencia:", err);
         if (axios.isAxiosError(err)) {
-          setError(err.response?.data?.message || 'Error al cargar las tendencias. Inténtalo de nuevo.');
+          setError(
+            err.response?.data?.message ||
+              "Error al cargar las tendencias. Inténtalo de nuevo."
+          );
         } else {
-          setError('Ha ocurrido un error inesperado al cargar las tendencias.');
+          setError("Ha ocurrido un error inesperado al cargar las tendencias.");
         }
         setTrendingTrees([]); // Clear results on error
       } finally {
@@ -57,12 +60,14 @@ export default function TendenciasPage() {
         </h1>
 
         <p className="text-xl text-custom-gray-medium text-center max-w-2xl mx-auto mb-12">
-          Descubre los árboles de conocimiento más populares y en auge de la comunidad de DevTree.
+          Descubre los árboles de conocimiento más populares y en auge de la
+          comunidad de DevTree.
         </p>
 
         <section className="bg-white p-8 rounded-2xl shadow-xl border border-primary-green-light">
           <h2 className="text-3xl font-bold text-primary-green-darker mb-6 flex items-center justify-center gap-3">
-            <TrendingUp className="w-8 h-8 text-primary-green-darker" /> ¡Lo más popular ahora mismo!
+            <TrendingUp className="w-8 h-8 text-primary-green-darker" /> ¡Lo más
+            popular ahora mismo!
           </h2>
 
           {error && (
@@ -73,18 +78,20 @@ export default function TendenciasPage() {
 
           {loading ? (
             <p className="text-lg text-center text-custom-gray-medium flex items-center justify-center gap-2 py-10">
-              <Loader2 className="h-6 w-6 animate-spin" /> Cargando tendencias...
+              <Loader2 className="h-6 w-6 animate-spin" /> Cargando
+              tendencias...
             </p>
           ) : trendingTrees.length === 0 ? (
             <p className="text-lg text-center text-custom-gray-medium flex items-center justify-center gap-2 py-10">
-              <Sparkles className="h-6 w-6 text-primary-green" /> Por ahora no hay árboles en tendencia. ¡Sé el primero en crear uno popular!
+              <Sparkles className="h-6 w-6 text-primary-green" /> Por ahora no
+              hay árboles en tendencia. ¡Sé el primero en crear uno popular!
             </p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {trendingTrees.map((tree) => (
                 <Link
                   key={tree._id}
-                  href={`/trees/${tree._id}/view`} // Link to the tree's detail page
+                  href={`/explore/Destacados/${tree._id}/destacados_view`}
                   className="block bg-custom-gray-lighter p-6 rounded-2xl border-2 border-primary-green hover:border-primary-green-dark transition-all duration-300 transform hover:scale-[1.03] shadow-lg hover:shadow-xl flex flex-col justify-between"
                 >
                   <div>
@@ -94,7 +101,6 @@ export default function TendenciasPage() {
                     <p className="text-sm text-custom-gray-dark line-clamp-3 mb-4">
                       {tree.description}
                     </p>
-                    {/* You can add trending metrics here if your API provides them */}
                     {tree.views !== undefined && (
                       <p className="text-xs text-custom-gray-medium mt-2">
                         Vistas: {tree.views.toLocaleString()}

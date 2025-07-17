@@ -144,7 +144,7 @@ export default function ResultadosPage() {
               {results.map(tree => (
                 <Link
                   key={tree._id}
-                  href={`/trees/${tree._id}/view`} // Asume una ruta para ver el detalle del árbol
+                    href={`/explore/Destacados/${tree._id}/destacados_view`}
                   className="block bg-custom-gray-lighter p-6 rounded-2xl border-2 border-primary-green hover:border-primary-green-dark transition-all duration-300 transform hover:scale-[1.03] shadow-lg hover:shadow-xl flex flex-col justify-between"
                 >
                   <div>
