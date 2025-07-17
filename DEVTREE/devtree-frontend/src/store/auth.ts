@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
 type AuthState = {
+  user: { _id: string; username: string } | null;
   token: string | null
   hasHydrated: boolean
 setToken: (token: string | null) => void
@@ -12,6 +13,7 @@ setToken: (token: string | null) => void
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
+      user: null,
       token: null,
       hasHydrated: false,
       setToken: (token) =>

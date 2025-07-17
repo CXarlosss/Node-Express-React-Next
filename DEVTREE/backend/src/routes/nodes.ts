@@ -4,7 +4,6 @@ import { protect, AuthRequest } from '../middlewares/authMiddleware';
 import Tree from '../models/Tree';
 
 const router = Router();
-
 // Crear nodo (protegido)
 router.post('/', protect, async (req: AuthRequest, res: Response) => {
   try {
@@ -36,8 +35,6 @@ router.post('/', protect, async (req: AuthRequest, res: Response) => {
     res.status(400).json({ message: 'Error al crear nodo', error: err });
   }
 });
-
-
 // Obtener todos los nodos (pública)
 router.get('/', async (_req, res: Response) => {
   try {
@@ -47,18 +44,19 @@ router.get('/', async (_req, res: Response) => {
     res.status(500).json({ message: 'Error al obtener nodos', error: err });
   }
 });
-
 // Obtener un nodo por ID (pública)
 router.get('/:id', async (req, res: Response) => {
   try {
-    const node = await Node.findById(req.params.id);
+    const node = await Node.findById(req.params.id)
+      .populate('tree')
+      .populate('createdBy');
+
     if (!node) return res.status(404).json({ message: 'Nodo no encontrado' });
     res.json(node);
   } catch (err) {
     res.status(500).json({ message: 'Error al obtener nodo', error: err });
   }
 });
-
 // Eliminar nodo (protegido)
 router.delete('/:id', protect, async (req: AuthRequest, res: Response) => {
   try {

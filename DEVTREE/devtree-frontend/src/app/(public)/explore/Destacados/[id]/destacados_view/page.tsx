@@ -1,38 +1,37 @@
-// src/app/(public)/explore/Destacados/destacados_view/page.tsx
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation'; // Para obtener el ID de la URL y para navegación
-import axios from 'axios'; // Para hacer la llamada a la API
-import { Loader2, ArrowLeft, BookOpen, Lightbulb, CheckCircle, XCircle, FolderSearch } from 'lucide-react'; // Iconos (FolderSearch añadido aquí)
+import { useParams, useRouter } from 'next/navigation';
+import axios from 'axios';
+import {
+  Loader2, ArrowLeft, BookOpen, Lightbulb, CheckCircle, XCircle
+} from 'lucide-react';
+import Link from 'next/link';
 
-// Define la interfaz para el tipo de nodo (ajusta según tu modelo real de Node)
 interface NodeType {
   _id: string;
   title: string;
-  description?: string; // Opcional
-  type: 'idea' | 'recurso' | 'skill'; // Tipos de nodos
-  content?: string; // Contenido detallado del nodo
-  // Otros campos que p uedan tener tus nodos
+  description?: string;
+  type: 'idea' | 'recurso' | 'skill';
+  content?: string;
 }
 
-// Define la interfaz para el tipo de árbol (ajusta según tu modelo real de Tree)
 interface TreeDetailType {
   _id: string;
   name: string;
   description: string;
   isPublic: boolean;
-  owner?: { // Opcional, si quieres mostrar el autor
+  owner?: {
     _id: string;
-    username: string; // O el nombre de usuario
+    username: string;
   };
-  nodes: NodeType[]; // Los nodos que componen el árbol
+  nodes: NodeType[];
 }
 
 export default function TreeDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const treeId = params.id as string; // Obtener el ID del árbol de la URL
+  const treeId = params.id as string;
 
   const [tree, setTree] = useState<TreeDetailType | null>(null);
   const [loading, setLoading] = useState(true);
@@ -46,12 +45,7 @@ export default function TreeDetailPage() {
     }
 
     const fetchTreeDetails = async () => {
-      setLoading(true);
-      setError('');
       try {
-        // Llama a tu API de backend para obtener los detalles del árbol.
-        // Asegúrate de que tu ruta de Express router.get('/:id') o similar
-        // esté configurada para devolver los nodos populados si es necesario.
         const res = await axios.get(`http://localhost:4000/api/trees/${treeId}`);
         setTree(res.data);
       } catch (err: unknown) {
@@ -62,62 +56,20 @@ export default function TreeDetailPage() {
           } else if (err.response?.status === 403) {
             setError('Este árbol es privado o no tienes permiso para verlo.');
           } else {
-            setError(err.response?.data?.message || 'Error al cargar el árbol. Inténtalo de nuevo.');
+            setError(err.response?.data?.message || 'Error al cargar el árbol.');
           }
         } else {
-          setError('Ha ocurrido un error inesperado al cargar el árbol.');
+          setError('Ha ocurrido un error inesperado.');
         }
-        setTree(null); // Asegurarse de que el árbol sea nulo en caso de error
+        setTree(null);
       } finally {
         setLoading(false);
       }
     };
 
     fetchTreeDetails();
-  }, [treeId]); // Dependencia del useEffect para que se ejecute cuando cambie el ID del árbol
+  }, [treeId]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-green-light to-primary-green-lighter text-custom-gray-dark">
-        <p className="text-lg text-custom-gray-medium animate-pulse flex items-center gap-2">
-          <Loader2 className="h-6 w-6 animate-spin" /> Cargando detalles del árbol...
-        </p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-primary-green-light to-primary-green-lighter text-custom-gray-dark px-4 text-center">
-        <XCircle className="h-16 w-16 text-red-500 mb-4" />
-        <p className="text-xl text-red-700 font-semibold mb-6">{error}</p>
-        <button
-          onClick={() => router.back()}
-          className="inline-flex items-center px-6 py-3 rounded-full bg-primary-green text-white hover:bg-primary-green-dark transition-colors duration-200 shadow-md"
-        >
-          <ArrowLeft className="h-5 w-5 mr-2" /> Volver
-        </button>
-      </div>
-    );
-  }
-
-  if (!tree) {
-    // Esto es un fallback, ya que `error` debería manejar la mayoría de los casos sin árbol.
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-primary-green-light to-primary-green-lighter text-custom-gray-dark px-4 text-center">
-        <FolderSearch className="h-16 w-16 text-custom-gray-medium mb-4" />
-        <p className="text-xl text-custom-gray-dark font-semibold mb-6">No se pudo cargar el árbol.</p>
-        <button
-          onClick={() => router.back()}
-          className="inline-flex items-center px-6 py-3 rounded-full bg-primary-green text-white hover:bg-primary-green-dark transition-colors duration-200 shadow-md"
-        >
-          <ArrowLeft className="h-5 w-5 mr-2" /> Volver
-        </button>
-      </div>
-    );
-  }
-
-  // Helper para obtener el icono según el tipo de nodo
   const getNodeIcon = (type: NodeType['type']) => {
     switch (type) {
       case 'idea': return <Lightbulb className="w-5 h-5 text-yellow-500" />;
@@ -127,65 +79,122 @@ export default function TreeDetailPage() {
     }
   };
 
-  return (
-    <main className="min-h-screen bg-gradient-to-br from-primary-green-light to-primary-green-lighter text-custom-gray-dark px-4 py-16 sm:px-6 md:px-10">
-      <div className="max-w-4xl mx-auto space-y-10">
-        {/* Botón para volver */}
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-green-light to-primary-green-lighter">
+        <Loader2 className="w-6 h-6 animate-spin text-custom-gray-dark" />
+        <p className="ml-3 text-custom-gray-medium animate-pulse">Cargando árbol...</p>
+      </div>
+    );
+  }
+
+  if (error || !tree) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center text-center px-4 bg-gradient-to-br from-primary-green-light to-primary-green-lighter">
+        <XCircle className="w-16 h-16 text-red-500 mb-4" />
+        <p className="text-lg font-semibold text-red-700 mb-6">{error || 'No se pudo cargar el árbol.'}</p>
         <button
           onClick={() => router.back()}
-          className="inline-flex items-center px-4 py-2 rounded-full bg-white text-primary-green-darker hover:bg-custom-gray-lighter transition-colors duration-200 shadow-md mb-6"
+          className="px-6 py-3 rounded-full bg-primary-green text-white hover:bg-primary-green-dark transition"
         >
-          <ArrowLeft className="h-5 w-5 mr-2" /> Volver
+          <ArrowLeft className="inline w-5 h-5 mr-2" /> Volver
         </button>
+      </div>
+    );
+  }
 
-        {/* Sección de información general del árbol */}
-        <section className="bg-white p-8 rounded-2xl shadow-xl border border-primary-green-light">
-          <h1 className="text-4xl font-extrabold text-primary-green-darker mb-4 leading-tight">
-            {tree.name}
-          </h1>
+  // Agrupar nodos por tipo
+  const groupedNodes = {
+    idea: tree.nodes.filter(n => n.type === 'idea'),
+    recurso: tree.nodes.filter(n => n.type === 'recurso'),
+    skill: tree.nodes.filter(n => n.type === 'skill')
+  };
+
+  const renderNodeGroup = (title: string, type: keyof typeof groupedNodes, emoji: string) => {
+    const nodes = groupedNodes[type];
+    if (nodes.length === 0) return null;
+
+    return (
+      <section className="mb-12">
+        <h3 className="text-2xl font-bold text-primary-green-darker mb-4 flex items-center gap-2">
+          {emoji} {title}
+        </h3>
+        <div className="grid md:grid-cols-2 gap-6">
+        {nodes.map(node => (
+  <Link
+  key={node._id}
+href={`/nodo/${node._id}`}
+
+  className="block bg-white border border-custom-gray-light rounded-xl p-5 shadow hover:shadow-md transition"
+>
+
+    <div className="flex items-center gap-2 mb-2">
+      {getNodeIcon(node.type)}
+      <h4 className="text-lg font-semibold text-primary-green-dark">{node.title}</h4>
+    </div>
+    {node.description && (
+      <p className="text-sm text-custom-gray-dark mb-2">{node.description}</p>
+    )}
+    {node.content && (
+      <div className="bg-custom-gray-lighter/50 text-sm p-3 rounded-lg border border-custom-gray-light max-h-32 overflow-auto">
+        {node.content}
+      </div>
+    )}
+  </Link>
+))}
+
+        </div>
+      </section>
+    );
+  };
+
+  return (
+    <main className="min-h-screen px-4 py-16 sm:px-6 md:px-10 bg-gradient-to-br from-primary-green-light to-primary-green-lighter text-custom-gray-dark">
+      <div className="max-w-5xl mx-auto space-y-12">
+
+        {/* Header con botón volver */}
+        <header className="flex justify-between items-center mb-8">
+          <button
+            onClick={() => router.back()}
+            className="flex items-center gap-2 text-sm text-primary-green-dark hover:underline"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Volver
+          </button>
+        </header>
+
+        {/* Info del Árbol */}
+        <section className="bg-white p-8 rounded-2xl border border-primary-green-light shadow">
+          <h1 className="text-4xl font-bold text-primary-green-darker mb-2">{tree.name}</h1>
           {tree.owner && (
-            <p className="text-sm text-custom-gray-medium mb-4">
-              Creado por: <span className="font-semibold text-primary-green-dark">{tree.owner.username || 'Usuario Desconocido'}</span>
+            <p className="text-sm text-custom-gray-medium mb-2">
+              Creado por: <span className="font-semibold">{tree.owner.username}</span>
             </p>
           )}
-          <p className="text-lg text-custom-gray-dark leading-relaxed mb-6">
-            {tree.description}
-          </p>
+          <p className="text-base text-custom-gray-dark mb-4">{tree.description}</p>
           {!tree.isPublic && (
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700 border border-red-300">
-              <XCircle className="h-3 w-3 mr-1" /> Árbol Privado
-            </span>
+            <div className="text-sm inline-flex items-center gap-1 text-red-600 bg-red-100 px-3 py-1 rounded-full border border-red-300">
+              <XCircle className="w-4 h-4" />
+              Árbol privado
+            </div>
           )}
         </section>
 
-        {/* Sección de Nodos del Árbol */}
-        <section className="bg-white p-8 rounded-2xl shadow-xl border border-primary-green-light">
+        {/* Nodos agrupados */}
+        <section>
           <h2 className="text-3xl font-bold text-primary-green-darker mb-6 flex items-center gap-3">
-            <BookOpen className="w-8 h-8 text-primary-green" /> Nodos del Conocimiento
+            <BookOpen className="w-7 h-7 text-primary-green" />
+            Nodos del Conocimiento
           </h2>
 
           {tree.nodes.length === 0 ? (
-            <p className="text-custom-gray-medium text-center text-lg py-8">Este árbol aún no tiene nodos.</p>
+            <p className="text-center text-lg text-custom-gray-medium py-10">Este árbol aún no tiene nodos.</p>
           ) : (
-            <div className="space-y-6">
-              {tree.nodes.map((node, index) => (
-                <div key={node._id || index} className="bg-custom-gray-lighter p-6 rounded-xl border border-custom-gray-light shadow-sm">
-                  <div className="flex items-center mb-3">
-                    {getNodeIcon(node.type)}
-                    <h3 className="text-xl font-semibold text-primary-green-darker ml-3">{node.title}</h3>
-                  </div>
-                  {node.description && (
-                    <p className="text-sm text-custom-gray-dark leading-relaxed mb-3">{node.description}</p>
-                  )}
-                  {node.content && (
-                    <div className="bg-white p-4 rounded-lg border border-custom-gray-light text-sm text-custom-gray-darker overflow-auto max-h-40">
-                      <p>{node.content}</p> {/* Mostrar contenido detallado del nodo */}
-                    </div>
-                  )}
-                  {/* Aquí podrías añadir más detalles del nodo, como enlaces, imágenes, etc. */}
-                </div>
-              ))}
-            </div>
+            <>
+              {renderNodeGroup('Ideas', 'idea', '💡')}
+              {renderNodeGroup('Recursos', 'recurso', '📚')}
+              {renderNodeGroup('Skills', 'skill', '✅')}
+            </>
           )}
         </section>
       </div>
