@@ -50,6 +50,30 @@ router.get('/mine', protect, async (req: AuthRequest, res: Response) => {
     res.status(500).json({ message: 'Error al obtener árboles', error: err });
   }
 });
+// src/routes/trees.ts (or wherever your node routes are defined)
+router.delete('/:treeId/nodes/:nodeId', protect, async (req: AuthRequest, res: Response) => {
+  try {
+    const { treeId, nodeId } = req.params;
+    // Find the tree and ensure the user owns it
+    const tree = await Tree.findById(treeId);
+    if (!tree) return res.status(404).json({ message: 'Árbol no encontrado.' });
+    if (tree.owner.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'No tienes permiso para eliminar nodos de este árbol.' });
+    }
+
+    // Find the node within the tree and remove it
+    const nodeIndex = tree.nodes.findIndex((node: any) => node._id.toString() === nodeId);
+    if (nodeIndex === -1) return res.status(404).json({ message: 'Nodo no encontrado en este árbol.' });
+
+    tree.nodes.splice(nodeIndex, 1); // Remove the node
+    await tree.save(); // Save the updated tree
+
+    res.json({ message: 'Nodo eliminado correctamente.' });
+  } catch (err) {
+    console.error('Error al eliminar nodo:', err);
+    res.status(500).json({ message: 'Error al eliminar nodo', error: err });
+  }
+});
 // Obtener árboles públicos por categoría (usando tags, name o description)
 router.get('/category/:category', async (req, res: Response) => {
   try {

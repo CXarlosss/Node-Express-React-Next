@@ -16,12 +16,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Tu Header se renderizará aquí, por encima de todo el contenido de la página */}
         <Header />
         
-        {/* El 'children' representa el contenido de cada página.
-          Añadimos un padding-top (pt-20) al contenedor de children para
-          compensar la altura del header fijo y evitar que el contenido se solape.
-          La clase 'min-h-screen' asegura que el contenido ocupe al menos la altura de la ventana.
-        */}
-        <div className="pt-20 min-h-screen"> {/* ⭐ IMPORTANTE: Añade pt-20 aquí ⭐ */}
+      
+        <div className="pt-10 min-h-screen"> {/* ⭐ IMPORTANTE: Añade pt-20 aquí ⭐ */}
           {children}
         </div>
       </body>
