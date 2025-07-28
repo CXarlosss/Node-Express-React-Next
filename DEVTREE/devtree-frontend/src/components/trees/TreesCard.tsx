@@ -1,27 +1,34 @@
-// src/components/trees/TreeCard.tsx
-import Link from 'next/link'
+import Link from 'next/link';
 
 type Props = {
-  id: string
-  name: string
-  description: string
-  isPublic: boolean
-}
+  id: string;
+  name: string;
+  description: string;
+  isPublic: boolean;
+};
 
 export default function TreeCard({ id, name, description, isPublic }: Props) {
   return (
-    <div className="bg-zinc-800 rounded-xl p-4 shadow-md space-y-2">
-      <h2 className="text-xl font-bold">{name}</h2>
-      <p className="text-sm text-zinc-300">{description}</p>
-      <span className="text-xs text-zinc-400">
+    <div className="bg-[var(--color-background-light)] border border-[var(--color-border-light)] rounded-2xl p-6 shadow-md hover:shadow-lg transition-shadow duration-300 space-y-4">
+      {/* Título del árbol */}
+      <h2 className="text-xl font-bold text-[var(--color-text-dark)]">{name}</h2>
+
+      {/* Descripción */}
+      <p className="text-sm text-[var(--color-text-medium)] line-clamp-3">{description}</p>
+
+      {/* Estado de privacidad */}
+      <span className="inline-block text-xs font-medium text-[var(--color-text-light)]">
         {isPublic ? '🌍 Público' : '🔒 Privado'}
       </span>
+
+      {/* Enlace al árbol */}
       <Link
         href={`/trees/${id}`}
-        className="block mt-2 text-blue-400 hover:underline text-sm"
+        className="inline-block mt-2 text-sm font-semibold text-[var(--color-primary-green)] hover:underline"
+        aria-label={`Ver árbol ${name}`}
       >
         Ver árbol →
       </Link>
     </div>
-  )
+  );
 }

@@ -8,7 +8,7 @@ import { useAuthStore } from "@/store/auth";
 interface Comment {
   _id: string;
   text: string;
-author: { _id: string; name: string };
+  author: { _id: string; name: string };
   createdAt: string;
 }
 
@@ -84,10 +84,9 @@ export default function CommentSection({
               className="bg-custom-gray-lighter p-4 rounded-lg border border-custom-gray-light"
             >
               <p className="text-sm text-custom-gray-dark">{c.text}</p>
-      <p className="text-xs text-custom-gray-medium mt-1">
-  — {c.author?.name || 'Usuario'}
-</p>
-
+              <p className="text-xs text-custom-gray-medium mt-1">
+                — {c.author?.name || "Usuario"}
+              </p>
             </li>
           ))}
         </ul>
