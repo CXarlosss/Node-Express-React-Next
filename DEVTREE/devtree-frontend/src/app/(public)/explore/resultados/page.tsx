@@ -1,6 +1,6 @@
 // src/app/(public)/explore/resultados/page.tsx
 import { Suspense } from 'react';
-import ResultadosContent from './ResultadosContext';
+import ResultadosContent from './ResultadosContent';
 
 export default function ResultadosPage() {
   return (
