@@ -1,11 +1,13 @@
 import dynamic from 'next/dynamic';
 
-const ResultadosContent = dynamic(() => import('./ResultadosContent'), {
-  ssr: false,
-  loading: () => (
-    <p className="text-center py-10 text-lg text-text-medium">Cargando resultados...</p>
-  ),
-});
+const ResultadosContent = dynamic(() =>
+  import('@/app/(public)/explore/resultados/ResultadosContent'), {
+    ssr: false,
+    loading: () => (
+      <p className="text-center py-10 text-lg text-text-medium">Cargando resultados...</p>
+    ),
+  }
+);
 
 export default function ResultadosPage() {
   return (
