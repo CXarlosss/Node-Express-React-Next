@@ -6,7 +6,7 @@ import Link from 'next/link';
 import axios from 'axios'; // Importar axios para manejo de errores
 import { useAuthStore } from "@/store/auth"; // Importar useAuthStore si la API requiere autenticación
 import { useRouter } from 'next/navigation'; // Importar useRouter para redirección
-import { Loader2, Filter, ArrowDownWideNarrow } from 'lucide-react'; // Importar Loader2, Filter, ArrowDownWideNarrow
+import { Loader2} from 'lucide-react'; // Importar Loader2, Filter, ArrowDownWideNarrow
 
 interface PublicTreeType {
   _id: string;
@@ -76,14 +76,6 @@ export default function DestacadosPage() {
             <h2 className="text-3xl font-bold text-primary-green-darker">
               Explora la Colección
             </h2>
-            <div className="flex gap-4">
-                <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-custom-gray-lighter text-custom-gray-dark border border-custom-gray-light hover:bg-custom-gray-light transition-colors">
-                    <Filter className="w-5 h-5" /> Filtrar
-                </button>
-                <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-custom-gray-lighter text-custom-gray-dark border border-custom-gray-light hover:bg-custom-gray-light transition-colors">
-                    <ArrowDownWideNarrow className="w-5 h-5" /> Ordenar
-                </button>
-            </div>
           </div>
           
           {error && <p className="text-red-600 text-base text-center mb-6 p-3 bg-red-50 rounded-lg border border-red-200">{error}</p>}

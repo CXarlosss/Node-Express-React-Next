@@ -4,18 +4,31 @@
 
 /* Variables CSS para nuestra paleta de verdes y blancos */
 :root {
-  --color-primary-green: #22c55e; /* green-500 */
-  --color-primary-green-dark: #16a34a; /* green-600 */
-  --color-primary-green-darker: #15803d; /* green-700 */
-  --color-accent-green-light: #dcfce7; /* green-50 */
-  --color-accent-green-lighter: #f0fdf4; /* green-10 */
+  /* Colores primarios (verde) */
+  --color-primary-green: #22c55e;       /* green-500 */
+  --color-primary-green-dark: #16a34a;  /* green-600 */
+  --color-primary-green-darker: #15803d;/* green-700 */
 
-  --color-text-dark: #1f2937; /* gray-800 */
-  --color-text-medium: #4b5563; /* gray-600 */
-  --color-text-light: #6b7280; /* gray-500 */
-  --color-background-light: #ffffff; /* white */
+  /* Acentos suaves (fondos y detalles) */
+  --color-accent-green-light: #dcfce7;  /* green-50 */
+  --color-accent-green-lighter: #f0fdf4;/* custom suave */
+  --color-accent-green-muted: #e6f4ea;  /* tono más elegante: verde agrisado */
+
+  /* Gris elegante para fondo general */
+  --color-background-elegant: #f7faf9; /* mezcla entre blanco cálido y gris-50 */
+  --color-background-card: #ffffff;
+  --color-background-hover: #f0fdf4;
+
+  /* Texto */
+  --color-text-dark: #1f2937;    /* gray-800 */
+  --color-text-medium: #4b5563;  /* gray-600 */
+  --color-text-light: #6b7280;   /* gray-500 */
+
+  /* Bordes y contornos */
   --color-border-light: #e5e7eb; /* gray-200 */
+  --color-border-subtle: #d1d5db;/* gray-300 */
 }
+
 
 @keyframes fade-in {
   from {
