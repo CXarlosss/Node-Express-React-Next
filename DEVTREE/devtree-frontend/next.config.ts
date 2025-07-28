@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   compiler: {
-    styledComponents: true, // Solo si realmente usas styled-components
+    styledComponents: true, // O quítalo si no usas styled-components
   },
 };
 
