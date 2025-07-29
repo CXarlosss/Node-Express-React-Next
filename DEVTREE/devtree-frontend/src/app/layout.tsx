@@ -17,7 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Header />
         
       
-        <div className="pt-10 min-h-screen"> {/* ⭐ IMPORTANTE: Añade pt-20 aquí ⭐ */}
+        <div className="pt-10 min-h-screen"> 
           {children}
         </div>
       </body>
