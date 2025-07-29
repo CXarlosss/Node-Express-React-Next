@@ -6,6 +6,7 @@ import userProgressRoutes from './userProgress';
 import commentRoutes from './comment';
 import badgeRoutes from './badge';
 import searchRoutes from './search';
+import categoriasRoutes from './categorias'; // 👈 nuevo import
 
 const router = Router();
 
@@ -20,4 +21,5 @@ router.use('/api/progress', userProgressRoutes);
 router.use('/api/comments', commentRoutes);
 router.use('/api/badges', badgeRoutes);
 router.use('/api/search', searchRoutes);
+router.use('/api/categorias', categoriasRoutes);
 export default router;
