@@ -45,6 +45,8 @@ export default function DestacadosPage() {
         
         // --- CAMBIO CLAVE AQUÍ: Llama a tu API real ---
         const res = await axios.get(`${API_URL}/api/trees/public`);
+        console.log('🌳 Árboles destacados recibidos:', res.data);
+
         setPublicTrees(res.data);
         // --- FIN DEL CAMBIO CLAVE ---
 
