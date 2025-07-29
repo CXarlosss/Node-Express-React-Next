@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { api } from '@/lib/api'
-import { useAuthStore } from "@/store/auth";
+import { api } from '../../../../../lib/api'
+import { useAuthStore } from "../../../../../store/auth";
 import axios from 'axios'; // Import axios for error handling
 
 type NodeType = {

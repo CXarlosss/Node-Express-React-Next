@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import axios from 'axios';
 import { BookOpen, CheckCircle, Lightbulb } from 'lucide-react';
-import CommentSection from '@/components/comments/CommentSection';
+import CommentSection from '../../../../components/comments/CommentSection';
 
 interface NodeType {
   _id: string;

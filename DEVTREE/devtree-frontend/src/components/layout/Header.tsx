@@ -1,7 +1,7 @@
 // src/components/layout/Header.tsx
 "use client"; // Asegúrate de que esto esté presente para usar hooks de cliente
 import Link from "next/link";
-import { useAuthStore } from "@/store/auth"; // Importa tu store de autenticación
+import { useAuthStore } from "../../store/auth"; // Importa tu store de autenticación
 import { useRouter } from "next/navigation"; // Para la redirección después del logout
 
 export const Header = () => {

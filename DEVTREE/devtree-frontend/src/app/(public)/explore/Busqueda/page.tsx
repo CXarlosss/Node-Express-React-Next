@@ -5,7 +5,7 @@
 import React, { useState } from 'react';
 import { Search, Loader2 } from 'lucide-react'; // Importar Loader2
 import axios from 'axios'; // Asegúrate de importar axios
-import { useAuthStore } from "@/store/auth"; // Importa useAuthStore si la búsqueda requiere autenticación
+import { useAuthStore } from "../../../../store/auth"; // Importa useAuthStore si la búsqueda requiere autenticación
 import { useRouter } from 'next/navigation'; // Importar useRouter para redirección
 
 // Definir un tipo para los resultados de búsqueda (ajusta según tu API)

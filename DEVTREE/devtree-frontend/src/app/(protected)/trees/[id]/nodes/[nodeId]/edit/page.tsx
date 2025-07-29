@@ -5,8 +5,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useParams, useRouter } from 'next/navigation'
-import { api } from '@/lib/api'
-import { useAuthStore } from '@/store/auth'
+import { api } from '../../../../../../../lib/api'
+import { useAuthStore } from '../../../../../../../store/auth'
 import axios from 'axios'
 
 // Esquema de validación

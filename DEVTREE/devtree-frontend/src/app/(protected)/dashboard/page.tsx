@@ -1,10 +1,10 @@
 "use client";
 
-import { useAuthStore } from "@/store/auth"; // Asegúrate de que la ruta sea correcta
+import { useAuthStore } from "../../../store/auth"; // Asegúrate de que la ruta sea correcta
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PlusCircle, Pencil, Eye } from "lucide-react";
-import { api } from "@/lib/api";
+import { api } from "../../../lib/api";
 import axios from "axios"; // <-- ¡IMPORTA AXIOS AQUÍ!
 
 interface Tree {

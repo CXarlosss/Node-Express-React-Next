@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { api } from '@/lib/api'
+import { api } from '../../../..//lib/api'
 
 // 1. ✅ Define el ESQUEMA ZOD
 //    La clave aquí es que el tipo INFERIDO directamente del esquema

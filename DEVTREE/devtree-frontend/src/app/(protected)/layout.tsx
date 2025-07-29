@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useAuthStore } from '@/store/auth'
+import { useAuthStore } from '../../store/auth'
 
 export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
   const token = useAuthStore(state => state.token)

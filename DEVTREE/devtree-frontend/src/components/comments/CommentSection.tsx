@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { MessageCircle } from "lucide-react";
-import { useAuthStore } from "@/store/auth";
+import { useAuthStore } from "../../store/auth";
 
 interface Comment {
   _id: string;

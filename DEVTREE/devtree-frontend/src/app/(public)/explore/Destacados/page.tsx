@@ -4,7 +4,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import axios from 'axios'; // Importar axios para manejo de errores
-import { useAuthStore } from "@/store/auth"; // Importar useAuthStore si la API requiere autenticación
+import { useAuthStore } from "../../../../store/auth"; // Importar useAuthStore si la API requiere autenticación
 import { useRouter } from 'next/navigation'; // Importar useRouter para redirección
 import { Loader2} from 'lucide-react'; // Importar Loader2, Filter, ArrowDownWideNarrow
 
