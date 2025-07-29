@@ -7,7 +7,6 @@ import { Search, Loader2 } from 'lucide-react'; // Importar Loader2
 import axios from 'axios'; // Asegúrate de importar axios
 import { useAuthStore } from "../../../../store/auth"; // Importa useAuthStore si la búsqueda requiere autenticación
 import { useRouter } from 'next/navigation'; // Importar useRouter para redirección
-const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 // Definir un tipo para los resultados de búsqueda (ajusta según tu API)
 type SearchResultType = {
@@ -27,14 +26,12 @@ export default function BusquedaPage() { // <-- CAMBIO CLAVE: export default fun
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleSearch = async () => {
+ const handleSearch = async () => {
+  const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL; // ✅ mueve esta línea aquí
+  console.log("🌐 URL de búsqueda:", API_URL); // Debug
+
   setError('');
   setLoading(true);
-
-  if (!hasHydrated) {
-    setLoading(false);
-    return;
-  }
 
   try {
     const res = await axios.get(`${API_URL}/api/search?q=${encodeURIComponent(searchTerm)}`);
@@ -50,6 +47,7 @@ export default function BusquedaPage() { // <-- CAMBIO CLAVE: export default fun
     setLoading(false);
   }
 };
+
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-primary-green-light to-primary-green-lighter text-custom-gray-dark px-4 py-16 sm:px-6 md:px-10">
