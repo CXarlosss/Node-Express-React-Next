@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import axios from 'axios';
 import { Loader2, FolderSearch } from 'lucide-react';
+const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 type TreeType = {
   _id: string;
@@ -48,12 +49,12 @@ export default function ResultadosContent() {
       }
 
       try {
-        let apiUrl = '';
-        if (category) {
-          apiUrl = `/api/trees/category/${encodeURIComponent(category)}`;
-        } else {
-          apiUrl = `/api/trees/search?q=${encodeURIComponent(query)}`;
-        }
+       let apiUrl = '';
+if (category) {
+  apiUrl = `${API_URL}/api/trees/category/${encodeURIComponent(category)}`;
+} else {
+  apiUrl = `${API_URL}/api/trees/search?q=${encodeURIComponent(query)}`;
+}
 
         const res = await axios.get(apiUrl);
         setResults(res.data);
