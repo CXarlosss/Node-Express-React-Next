@@ -4,7 +4,6 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import axios from 'axios'; // Importar axios para manejo de errores
-import { useAuthStore } from "../../../../store/auth"; // Importar useAuthStore si la API requiere autenticación
 import { Loader2} from 'lucide-react'; // Importar Loader2, Filter, ArrowDownWideNarrow
 
 interface PublicTreeType {
@@ -17,16 +16,13 @@ interface PublicTreeType {
 
 export default function DestacadosPage() {
  
-  const hasHydrated = useAuthStore(state => state.hasHydrated);
 
   const [publicTrees, setPublicTrees] = useState<PublicTreeType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-useEffect(() => {
-  // Esperar a que Zustand esté hidratado antes de hacer nada
-  if (!hasHydrated) return;
 
+useEffect(() => {
   const fetchPublicTrees = async () => {
     const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -37,8 +33,6 @@ useEffect(() => {
     } catch (err: unknown) {
       console.error("Error al cargar árboles públicos destacados:", err);
       if (axios.isAxiosError(err) && err.response?.status === 401) {
-        // Si algún día necesitas proteger esta ruta:
-        // router.push('/login');
         setError('Necesitas iniciar sesión para ver los árboles destacados.');
       } else {
         setError('Error al cargar los árboles destacados. Por favor, inténtalo de nuevo más tarde.');
@@ -49,7 +43,8 @@ useEffect(() => {
   };
 
   fetchPublicTrees();
-}, [hasHydrated]);
+}, []); // 👈 Nada de `hasHydrated` aquí
+
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-primary-green-light to-primary-green-lighter text-custom-gray-dark px-4 py-16 sm:px-6 md:px-10">
