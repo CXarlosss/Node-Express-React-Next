@@ -1,12 +1,12 @@
-/** @type {import('next').NextConfig} */
+// next.config.js
 const nextConfig = {
   reactStrictMode: true,
   experimental: {
-    appDir: true, // ✅ ACTIVA EL APP ROUTER
+    appDir: true,
   },
   compiler: {
-    styledComponents: true, // O bórralo si no lo usas
+    styledComponents: true,
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
