@@ -9,8 +9,10 @@ import { useRouter } from 'next/navigation'
 import { useAuthStore } from '../../../store/auth'
 import { Loader2 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-// ====================
+// ====================const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 // VALIDACIONES
 // ====================
 
@@ -61,7 +63,7 @@ function LoginForm({
     setLoading(true)
     setError('')
     try {
-      const res = await axios.post('http://localhost:4000/api/auth/login', data)
+      const res = await axios.post(`${API_URL}/api/auth/login`, data)
       setToken(res.data.token)
       router.push('/dashboard')
     } catch (err) {
@@ -174,7 +176,7 @@ function RegisterForm({
     setLoading(true)
     setError('')
     try {
-      const res = await axios.post('http://localhost:4000/api/auth/register', data)
+      const res = await axios.post(`${API_URL}/api/auth/register`, data)
       setToken(res.data.token)
       router.push('/dashboard')
     } catch (err) {

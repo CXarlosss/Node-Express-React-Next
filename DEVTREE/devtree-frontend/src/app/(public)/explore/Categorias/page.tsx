@@ -11,8 +11,10 @@ export default function CategoriasPage() {
 
   useEffect(() => {
     const fetchTags = async () => {
+      const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
       try {
-        const res = await axios.get('http://localhost:4000/api/trees/tags/all');
+        const res = await axios.get(`${API_URL}/api/trees/tags/all`);
         setTags(res.data);
       } catch (err) {
         console.error('Error al cargar tags:', err);

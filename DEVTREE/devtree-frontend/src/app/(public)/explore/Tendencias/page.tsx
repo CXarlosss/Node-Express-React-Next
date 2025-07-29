@@ -28,10 +28,11 @@ export default function TendenciasPage() {
     const fetchTrendingTrees = async () => {
       setLoading(true);
       setError("");
+      const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
       try {
         // Replace with your actual backend endpoint for trending trees
-        // Example: GET http://localhost:4000/api/trees/trending
-        const res = await axios.get("http://localhost:4000/api/trees/trending");
+        const res = await axios.get(`${API_URL}/api/trees/trending`);
         setTrendingTrees(res.data);
       } catch (err: unknown) {
         console.error("Error al obtener árboles en tendencia:", err);

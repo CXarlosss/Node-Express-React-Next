@@ -29,8 +29,10 @@ export default function PublicNodePage() {
 
   useEffect(() => {
     const fetchNode = async () => {
+      const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
       try {
-        const res = await axios.get(`http://localhost:4000/api/nodes/${id}`);
+        const res = await axios.get(`${API_URL}/api/nodes/${id}`);
         console.log('Node data:', res.data);
         setNode(res.data);
       } catch (err) {

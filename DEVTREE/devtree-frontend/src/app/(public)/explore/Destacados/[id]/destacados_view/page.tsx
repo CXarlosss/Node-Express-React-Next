@@ -45,8 +45,10 @@ export default function TreeDetailPage() {
     }
 
     const fetchTreeDetails = async () => {
+      const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
       try {
-        const res = await axios.get(`http://localhost:4000/api/trees/${treeId}`);
+        const res = await axios.get(`${API_URL}/api/trees/${treeId}`);
         setTree(res.data);
       } catch (err: unknown) {
         console.error("Error al cargar los detalles del árbol:", err);

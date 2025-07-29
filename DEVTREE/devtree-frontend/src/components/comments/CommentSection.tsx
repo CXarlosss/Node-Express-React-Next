@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { MessageCircle } from "lucide-react";
 import { useAuthStore } from "../../store/auth";
+const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 interface Comment {
   _id: string;
@@ -35,7 +36,7 @@ export default function CommentSection({
     const fetchComments = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:4000/api/comments/${nodeId}/comments`
+          `${API_URL}/api/comments/${nodeId}/comments`
         );
         setComments(res.data);
       } catch (err) {
@@ -52,7 +53,7 @@ export default function CommentSection({
 
     try {
       const res = await axios.post(
-        `http://localhost:4000/api/comments/${nodeId}`,
+        `${API_URL}/api/comments/${nodeId}`,
         { text: commentText },
         { headers: { Authorization: `Bearer ${token}` } }
       );

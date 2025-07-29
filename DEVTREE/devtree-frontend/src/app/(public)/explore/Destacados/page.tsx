@@ -39,9 +39,12 @@ export default function DestacadosPage() {
     // }
 
     const fetchPublicTrees = async () => {
+      const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
       try {
+        
         // --- CAMBIO CLAVE AQUÍ: Llama a tu API real ---
-        const res = await axios.get('http://localhost:4000/api/trees/public');
+        const res = await axios.get(`${API_URL}/api/trees/public`);
         setPublicTrees(res.data);
         // --- FIN DEL CAMBIO CLAVE ---
 
