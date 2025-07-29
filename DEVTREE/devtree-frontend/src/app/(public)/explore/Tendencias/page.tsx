@@ -29,6 +29,7 @@ export default function TendenciasPage() {
       setLoading(true);
       setError("");
       const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+console.log(process.env.NEXT_PUBLIC_API_BASE_URL)
 
       try {
         // Replace with your actual backend endpoint for trending trees

@@ -15,6 +15,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 // VALIDACIONES
 // ====================
+console.log(process.env.NEXT_PUBLIC_API_BASE_URL)
 
 const loginSchema = z.object({
   email: z.string().email('Email no válido'),

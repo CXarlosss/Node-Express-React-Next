@@ -12,6 +12,8 @@ export default function CategoriasPage() {
   useEffect(() => {
     const fetchTags = async () => {
       const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+      console.log(process.env.NEXT_PUBLIC_API_BASE_URL)
+
 
       try {
         const res = await axios.get(`${API_URL}/api/trees/tags/all`);
