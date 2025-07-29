@@ -1,8 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "Node16",
-    "moduleResolution": "Node16",
+    "module": "commonjs",              // <-- CAMBIO CLAVE
     "outDir": "./dist",
     "rootDir": "./src",
     "esModuleInterop": true,

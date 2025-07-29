@@ -1,0 +1,190 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const Tree_1 = __importDefault(require("../models/Tree"));
+const authMiddleware_1 = require("../middlewares/authMiddleware");
+const router = (0, express_1.Router)();
+// Crear árbol personalizado
+router.post('/', authMiddleware_1.protect, async (req, res) => {
+    try {
+        const { name, description, nodes, isPublic, tags } = req.body; // ⬅️ Añadido tags
+        const newTree = new Tree_1.default({
+            name,
+            description,
+            nodes,
+            isPublic,
+            tags, // ⬅️ Incluye tags aquí
+            owner: req.user._id,
+        });
+        await newTree.save();
+        res.status(201).json(newTree);
+    }
+    catch (err) {
+        res.status(400).json({ message: 'Error al crear árbol', error: err });
+    }
+});
+router.get('/trending', async (_req, res) => {
+    try {
+        const trendingTrees = await Tree_1.default.find({ isPublic: true })
+            .sort({ updatedAt: -1 })
+            .limit(9)
+            .select('_id name description updatedAt');
+        res.json(trendingTrees);
+    }
+    catch (err) {
+        console.error('🔥 Error al obtener árboles en tendencia:', err);
+        res.status(500).json({
+            message: 'Error al obtener árboles en tendencia',
+            error: err instanceof Error ? err.message : 'Unknown error',
+        });
+    }
+});
+// Obtener árboles propios
+router.get('/mine', authMiddleware_1.protect, async (req, res) => {
+    try {
+        const trees = await Tree_1.default.find({ owner: req.user._id });
+        res.json(trees);
+    }
+    catch (err) {
+        res.status(500).json({ message: 'Error al obtener árboles', error: err });
+    }
+});
+// src/routes/trees.ts (or wherever your node routes are defined)
+router.delete('/:treeId/nodes/:nodeId', authMiddleware_1.protect, async (req, res) => {
+    try {
+        const { treeId, nodeId } = req.params;
+        // Find the tree and ensure the user owns it
+        const tree = await Tree_1.default.findById(treeId);
+        if (!tree)
+            return res.status(404).json({ message: 'Árbol no encontrado.' });
+        if (tree.owner.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ message: 'No tienes permiso para eliminar nodos de este árbol.' });
+        }
+        // Find the node within the tree and remove it
+        const nodeIndex = tree.nodes.findIndex((node) => node._id.toString() === nodeId);
+        if (nodeIndex === -1)
+            return res.status(404).json({ message: 'Nodo no encontrado en este árbol.' });
+        tree.nodes.splice(nodeIndex, 1); // Remove the node
+        await tree.save(); // Save the updated tree
+        res.json({ message: 'Nodo eliminado correctamente.' });
+    }
+    catch (err) {
+        console.error('Error al eliminar nodo:', err);
+        res.status(500).json({ message: 'Error al eliminar nodo', error: err });
+    }
+});
+// Obtener árboles públicos por categoría (usando tags, name o description)
+router.get('/category/:category', async (req, res) => {
+    try {
+        const category = req.params.category;
+        const regex = new RegExp(category, 'i'); // Búsqueda insensible a mayúsculas
+        const trees = await Tree_1.default.find({
+            isPublic: true,
+            $or: [
+                { tags: { $in: [regex] } }, // ✅ búsqueda correcta en arrays
+                { name: regex },
+                { description: regex },
+            ]
+        }).select('_id name description tags');
+        res.json(trees);
+    }
+    catch (err) {
+        console.error('Error al buscar árboles por categoría:', err);
+        res.status(500).json({ message: 'Error al buscar árboles por categoría', error: err });
+    }
+});
+// Obtener todas las categorías únicas (tags)
+router.get('/tags/all', async (_req, res) => {
+    try {
+        const tags = await Tree_1.default.distinct('tags', { isPublic: true });
+        res.json(tags.filter(Boolean)); // elimina null/undefined
+    }
+    catch (err) {
+        console.error('Error al obtener tags:', err);
+        res.status(500).json({ message: 'Error al obtener categorías', error: err });
+    }
+});
+// Obtener TODOS los árboles públicos (NUEVA RUTA Y POSICIÓN IMPORTANTE)
+router.get('/public', async (_req, res) => {
+    try {
+        const publicTrees = await Tree_1.default.find({ isPublic: true }).select('_id name description');
+        res.json(publicTrees);
+    }
+    catch (err) {
+        console.error('Error al obtener árboles públicos:', err);
+        res.status(500).json({ message: 'Error al obtener árboles públicos', error: err });
+    }
+});
+// Obtener árbol privado solo si es dueño (para editar o gestionar nodos)
+router.get('/:id/private', authMiddleware_1.protect, async (req, res) => {
+    try {
+        const tree = await Tree_1.default.findById(req.params.id).populate('nodes');
+        if (!tree)
+            return res.status(404).json({ message: 'Árbol no encontrado' });
+        if (tree.owner.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ message: 'No tienes permiso para ver este árbol' });
+        }
+        res.json(tree);
+    }
+    catch (err) {
+        res.status(500).json({ message: 'Error al obtener el árbol', error: err });
+    }
+});
+// Obtener árbol público por ID (esta ruta ahora se ejecutará DESPUÉS de /public)
+router.get('/:id', async (req, res) => {
+    try {
+        const tree = await Tree_1.default.findById(req.params.id).populate('nodes');
+        if (!tree)
+            return res.status(404).json({ message: 'Árbol no encontrado' });
+        if (!tree.isPublic)
+            return res.status(403).json({ message: 'Este árbol es privado' });
+        res.json(tree);
+    }
+    catch (err) {
+        res.status(500).json({ message: 'Error al obtener árbol', error: err });
+    }
+});
+// Actualizar árbol (solo dueño)
+// Actualizar árbol (solo dueño) - CORRECTED
+router.put('/:id', authMiddleware_1.protect, async (req, res) => {
+    try {
+        const tree = await Tree_1.default.findById(req.params.id);
+        if (!tree)
+            return res.status(404).json({ message: 'Árbol no encontrado' });
+        if (tree.owner.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ message: 'No autorizado' });
+        }
+        tree.name = req.body.name;
+        tree.description = req.body.description;
+        tree.isPublic = req.body.isPublic;
+        tree.tags = req.body.tags; // ✅ FIX: Add this line to update the tags array
+        await tree.save(); // Save the updated tree document
+        res.json(tree); // Respond with the updated tree
+    }
+    catch (err) {
+        // Improved error response for clarity
+        console.error('Error al actualizar árbol:', err);
+        res.status(500).json({ message: 'Error al actualizar árbol', error: err instanceof Error ? err.message : 'Unknown error' });
+    }
+});
+// ... (rest of your existing routes and export default router)
+// Eliminar árbol (solo dueño)
+router.delete('/:id', authMiddleware_1.protect, async (req, res) => {
+    try {
+        const tree = await Tree_1.default.findById(req.params.id);
+        if (!tree)
+            return res.status(404).json({ message: 'Árbol no encontrado' });
+        if (tree.owner.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ message: 'No tienes permiso para eliminar este árbol' });
+        }
+        await tree.deleteOne();
+        res.json({ message: 'Árbol eliminado correctamente' });
+    }
+    catch (err) {
+        res.status(500).json({ message: 'Error al eliminar árbol', error: err });
+    }
+});
+exports.default = router;
