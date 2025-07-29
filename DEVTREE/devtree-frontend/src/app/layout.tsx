@@ -1,5 +1,5 @@
 // src/app/layout.tsx
-import { Header } from "@/components/layout/Header"; // Importa tu componente Header
+import { Header } from "../components/layout/Header"; // Importa tu componente Header
 import "../styles/tailwind.css"; // Asegúrate de que esta ruta sea correcta
 import type { Metadata } from 'next';
 
